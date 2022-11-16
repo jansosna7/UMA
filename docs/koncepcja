@@ -25,3 +25,6 @@ dane:
     -zbiór_sqrt
     -zbiór_1/2 - dane gdzie brakuje połowy
     każdą wygenerowaną próbę kontrolną można wycinać i doprowadzać do konkretnych zbiorów
+
+skuteczność:
+    -liczba poprawnie sklasyfikowanych/liczba danych
