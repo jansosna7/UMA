@@ -11,3 +11,17 @@ algorytmy:
     -C4.5
     -CART
 
+plan działania:
+    dla każdego algorytmu każdy sposób pełne drzewo
+    wersja szybka (mniej dokładna) - czy można wygenerować niższe drzewo (niepełne) tak żeby skuteczność klasyfikacji była 99% (albo 1-epsilon)
+
+dane:
+    -próba kontrolna - dane z wszystkimi atrybutami
+    -zbiór_1 - dane gdzie brakuje 1 atrybutów
+    -zbiór_2 - dane gzie brakuje 2 atrybutów
+    -zbiór_3
+    -zbiór_log10
+    -zbiór_log2
+    -zbiór_sqrt
+    -zbiór_1/2 - dane gdzie brakuje połowy
+    każdą wygenerowaną próbę kontrolną można wycinać i doprowadzać do konkretnych zbiorów
