@@ -1,4 +1,4 @@
-#Created by: Marcin Latawiec, Jan Sosnowski
+# Created by: Marcin Latawiec, Jan Sosnowski
 
 
 import numpy as np
@@ -70,7 +70,7 @@ class MissingValuesCreator:
 
         return list_with_missing_values
 
-    def delete_random_value_from_random_column(self,list):
+    def delete_random_value_from_random_column(self, list):
         list_with_missing_values = copy.copy(list)  # making shallow copy of a given list
         index = random.randint(0, len(list[0]))
         no = random.randint(0, len(list))
@@ -79,17 +79,30 @@ class MissingValuesCreator:
             b = True
             list_with_missing_values[no][index] = 'Nan'
 
-        return b,list_with_missing_values
+        return b, list_with_missing_values
 
-    def delete_random_values_from_random_columns(self,list,n):
+    def delete_random_values_from_random_columns(self, list, n):
         list_with_missing_values = copy.copy(list)  # making shallow copy of a given list
-        for i in range(0,n):
+        for i in range(0, n):
             b, list_with_missing_values = self.delete_random_value_from_random_column(list_with_missing_values)
             i = 0
             while not b:
                 b, list_with_missing_values = self.delete_random_value_from_random_column(list_with_missing_values)
-                i+=1
+                i += 1
                 if i > 1000:
                     raise Exception("Can't delete that many values!")
 
+        return list_with_missing_values
+
+    def delete_random_values_from_list_percentage(self, list):
+        list_with_missing_values = copy.copy(list)  # making shallow copy of a given list
+        count_all = len(list_with_missing_values) * len(list_with_missing_values[0])
+        count_nan = 0
+        for example in list_with_missing_values:
+            for x in example:
+                if x == 'Nan':
+                    count_nan += 1
+        if (count_nan / count_all) * 100 < self.percent:
+            list_with_missing_values = self.delete_random_values_from_random_columns(list_with_missing_values,
+                                                                                     count_all * self.percent / 100 - count_nan)
         return list_with_missing_values
