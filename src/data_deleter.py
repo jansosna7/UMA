@@ -74,5 +74,22 @@ class MissingValuesCreator:
         list_with_missing_values = copy.copy(list)  # making shallow copy of a given list
         index = random.randint(0, len(list[0]))
         no = random.randint(0, len(list))
-        list_with_missing_values[no][index] = 'Nan'
+        b = False
+        if list_with_missing_values[no][index] != 'Nan':
+            b = True
+            list_with_missing_values[no][index] = 'Nan'
+
+        return b,list_with_missing_values
+
+    def delete_random_values_from_random_columns(self,list,n):
+        list_with_missing_values = copy.copy(list)  # making shallow copy of a given list
+        for i in range(0,n):
+            b, list_with_missing_values = self.delete_random_value_from_random_column(list_with_missing_values)
+            i = 0
+            while not b:
+                b, list_with_missing_values = self.delete_random_value_from_random_column(list_with_missing_values)
+                i+=1
+                if i > 1000:
+                    raise Exception("Can't delete that many values!")
+
         return list_with_missing_values
