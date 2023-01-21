@@ -1,0 +1,4 @@
+TEMAT PROJEKTU:
+Drzewo decyzyjne w zadaniu klasyfikacji danych z brakującymi wartościami atrybutów. 
+Należy uodpornić klasyfikator na brakujące wartości atrybutów podczas testowania. 
+Należy zaimplementować i przebadać co najmniej 2 metody uodparniające. P
