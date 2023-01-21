@@ -14,10 +14,17 @@ class OurTree:
         self.tree = None
         self.max_depth = max_depth
 
-    def fit(self, X, y):
-        self.tree = self._create_tree(X, y, depth=0)
+    def fit(self, X, y, method=None):
+        if(method == None or method=="default"):
+            self.tree = self._create_tree(X, y, depth=0)
+        else:
+            if method == "delete":
+                nan_rows = np.isnan(X).any(axis=1)
 
-
+                # delete the rows that contain NaN values
+                X = np.delete(X, np.where(nan_rows)[0], axis=0)
+                y = np.delete(y, np.where(nan_rows)[0], axis=0)
+                self.tree = self._create_tree(X, y, depth=0)
 
     def predict(self, X):
         return np.array([self._predict(x) for x in X])
