@@ -15,10 +15,10 @@ class OurTree:
         self.max_depth = max_depth
 
     def fit(self, X, y, method=None):
-        if(method == None or method=="default"):
+        if method is None or method == "default":
             self.tree = self._create_tree(X, y, depth=0)
         else:
-            if method == "delete":
+            if method == "skip":
                 nan_rows = np.isnan(X).any(axis=1)
 
                 # delete the rows that contain NaN values
@@ -26,8 +26,10 @@ class OurTree:
                 y = np.delete(y, np.where(nan_rows)[0], axis=0)
                 self.tree = self._create_tree(X, y, depth=0)
 
+        print(self.tree)
+
     def predict(self, X):
-        return np.array([self._predict(x) for x in X])
+        return np.array([self._predict(x, self.tree) for x in X])
 
     def score(self, X_test, y_test):
         """Calculate the accuracy of the model on a test set."""
@@ -36,7 +38,6 @@ class OurTree:
         return accuracy
 
     def _create_tree(self, X, y, depth):
-        print(depth)
         if self.max_depth is not None and depth >= self.max_depth:
             return self._majority_class(y)
 
@@ -56,8 +57,8 @@ class OurTree:
         X_left, y_left, X_right, y_right = self._split_data(X, y, feature, value)
 
         # Build the left and right subtrees
-        left_tree = self._create_tree(X_left, y_left, depth+1)
-        right_tree = self._create_tree(X_right, y_right, depth+1)
+        left_tree = self._create_tree(X_left, y_left, depth + 1)
+        right_tree = self._create_tree(X_right, y_right, depth + 1)
 
         # Return the tree as a dictionary
         return {feature: {value: (left_tree, right_tree)}}
@@ -130,29 +131,25 @@ class OurTree:
 
         return entropy
 
-    def _predict(self, x):
-        """Predict the class for a single sample."""
+    def _predict(self, x, subtree):
+        # If the subtree is a leaf node, return the class
+
+        if isinstance(subtree, int) or isinstance(subtree, float) or isinstance(subtree, np.int64):
+            return
+
         # Get the feature and value of the current node
-        #feature, value = list(self.tree.keys())[0], list(self.tree.values())[0]
-        print(self.tree)
-        feature, value = next(iter(self.tree.items()))
+        feature, value = list(subtree.keys())[0], list(subtree.values())[0]
+
         # If the feature value of the sample is less than the value of the current node, move to the left subtree
-        print(feature, 'a',  value)
-        print(list(value))
-        print(value[feature])
-        if x[feature] < value:
-            subtree = value[0]
+        if x[feature] < list(value)[0]:
+            subtree = subtree[feature][list(value)[0]][0]
         else:
             # Otherwise, move to the right subtree
-            subtree = value[1]
+            subtree = subtree[feature][list(value)[0]][1]
 
-        # If the subtree is a leaf node, return the class
-        if isinstance(subtree, int):
-            return subtree
-
-        # Otherwise, recursively call the predict function with the subtree
+        # Recursively call the predict function with the subtree
         return self._predict(x, subtree)
-    '''handling of NaN values'''
+
     def is_missing(self, feature_val):
         if str(feature_val) == "NaN" or str(feature_val) == "nan":
             return True
