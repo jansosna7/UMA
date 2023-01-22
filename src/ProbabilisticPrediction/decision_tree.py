@@ -46,7 +46,7 @@ class OurTree:
             return self._majority_class(y)
 
         # If all the samples belong to the same class, return that class
-        if len(set(y)) == 1:
+        if len(np.unique(y)) == 1:
             return y[0]
 
         # If there are no more features to split on, return the most common class

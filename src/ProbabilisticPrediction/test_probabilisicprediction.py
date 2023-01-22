@@ -1,6 +1,8 @@
 import os.path
 from random import randrange
-
+import sys
+print(sys.path)
+sys.path.append("/home/kali/PycharmProjects/UMA")
 import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score
@@ -26,7 +28,7 @@ data = data[["fea_1", "fea_2", "fea_3", "fea_4", "fea_5", "fea_6", "fea_7", "fea
 #print(data)
 
 X = data.iloc[:, :-1].values
-Y = data.iloc[:, -1].values.reshape(-1,1)
+Y = data.iloc[:, -1].values
 
 seed = randrange(1, 1000)
 number_of_iterations = 10
