@@ -133,12 +133,10 @@ class OurTree:
         return entropy
 
     def _predict(self, x, subtree):
-        """Recursivly check what label are we assigning to x"""
+        """Predict the class for a single sample."""
 
-        # If the subtree is a leaf node, return the class
-
-        if isinstance(subtree, int) or isinstance(subtree, float) or isinstance(subtree, np.int64) or type(subtree) in (int,float,None,np.int64):
-            return
+        if isinstance(subtree, int) or isinstance(subtree, float) or subtree is None or type(subtree) in (int, float, None, np.int64):
+            return subtree
 
         # Get the feature and value of the current node
         feature, value = list(subtree.keys())[0], list(subtree.values())[0]
@@ -153,7 +151,6 @@ class OurTree:
         # Recursively call the predict function with the subtree
         return self._predict(x, subtree)
 
-    '''handling of NaN values'''
     def is_missing(self, feature_val):
         if str(feature_val) == "NaN" or str(feature_val) == "nan":
             return True
