@@ -131,8 +131,12 @@ class OurTree:
 
         return entropy
 
-    def _predict(self, x):
+    def _predict(self, x, subtree):
         """Predict the class for a single sample."""
+
+        if isinstance(subtree, int) or isinstance(subtree, float) or subtree is None or type(subtree) in (int, float, None, np.int64):
+            return subtree
+
         # Get the feature and value of the current node
         feature, value = list(subtree.keys())[0], list(subtree.values())[0]
 
