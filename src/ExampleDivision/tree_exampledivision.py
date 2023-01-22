@@ -6,9 +6,6 @@
 
 
 import numpy as np
-import sys
-from random import randrange
-
 
 class Examplesplitter:
     def __init__(self, x, y):

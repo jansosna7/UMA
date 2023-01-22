@@ -9,11 +9,17 @@ from scipy.stats import rice
 
 from enum import Enum, auto
 import numpy as np
-
+from sklearn.datasets import load_breast_cancer
 class FillDataMethod(Enum):
     MEAN = auto()
     MEDIAN = auto()
     MODE = auto()
+
+def load_data(dataset_name):
+    if dataset_name.lower() == 'cancer':
+        return load_breast_cancer()
+    raise TypeError
+
 class Filler:
     def __int__(self, unique_names_probability_dict, tree):
         self.probability_dict = unique_names_probability_dict
