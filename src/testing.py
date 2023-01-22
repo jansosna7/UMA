@@ -53,11 +53,11 @@ accuracy = clf.score(X_test, y_test)
 
 print("v2", accuracy)
 
-#clf0 = DecisionTreeClassifier(criterion='entropy')
-#clf0.fit(X_train, y_train)
-#y_pred = clf.predict(X_test)
+clf0 = DecisionTreeClassifier(criterion='entropy')
+clf0.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
 #print(y_pred, y_test)
-#print("Accuracy basic: ", accuracy_score(y_test, y_pred))
+print("Accuracy basic: ", accuracy_score(y_test, y_pred))
 
 X = org_data.drop(label, axis=1)
 y = org_data[label]
@@ -74,10 +74,6 @@ clf.fit(X_train,y_train,'default')
 accuracy = clf.score(X_test, y_test)
 
 print("v3", accuracy)
-clf0 = DecisionTreeClassifier(criterion='entropy')
-clf0.fit(X_train, y_train)
-y_pred = clf.predict(X_test)
-print("Accuracy basic: ", accuracy_score(y_test, y_pred))
 
 X = org_data.drop(label, axis=1)
 y = org_data[label]
@@ -94,7 +90,3 @@ clf.fit(X_train,y_train,'default')
 accuracy = clf.score(X_test, y_test)
 
 print("v4", accuracy)
-clf0 = DecisionTreeClassifier(criterion='entropy')
-clf0.fit(X_train, y_train)
-y_pred = clf.predict(X_test)
-print("Accuracy basic: ", accuracy_score(y_test, y_pred))
