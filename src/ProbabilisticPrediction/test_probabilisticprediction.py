@@ -20,7 +20,7 @@ filename_rice = os.path.join(dirname, '../../resources/rice.csv')
 #columns_names_cancer =  ["radius_mean","texture_mean","perimeter_mean","area_mean","smoothness_mean","compactness_mean","concavity_mean", "concave points_mean", "symmetry_mean", "fractal_dimension_mean","radius_se", "texture_se", "perimeter_se", "area_se", "smoothness_se", "compactness_se", "concavity_se", "concave points_se","symmetry_se", "fractal_dimension_se", "radius_worst", "texture_worst", "texture_worst", "area_worst", "smoothness_worst", "compactness_worst", "concavity_worst", "concave points_worst", "symmetry_worst""fractal_dimension_worst"]
 columns_names_customer_data = ["label","id","fea_1", "fea_2", "fea_3", "fea_4", "fea_5", "fea_6", "fea_7", "fea_8", "fea_9", "fea_10", "fea_11"]
 data = pd.read_csv(filename_customerdata, skiprows=1, header=None, names=columns_names_customer_data)
-data.head(10)
+data.head(100)
 #print(data)
 data = data[["fea_1", "fea_2", "fea_3", "fea_4", "fea_5", "fea_6", "fea_7", "fea_8", "fea_9", "fea_10", "fea_11", "label"]]
 #print(data)
@@ -42,40 +42,40 @@ avg_accuracy_classifier_without_missing_values = 0
 for n in range(number_of_iterations):
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=.25, random_state=seed)
 
-    classifier = OurTree()
+    classifier = OurTree(16)
     classifier.fit(X_train,Y_train)
 
-    #full_classifier = OurTree(min_samples_split=3, max_depth=np.inf,  predictor= 1)
-    #full_classifier.fit(X_train, Y_train)
+    full_classifier = OurTree(16)
+    full_classifier.fit(X_train, Y_train)
 
-    #naive_classifier = OurTree(min_samples_split=3, max_depth=np.inf,  predictor= 2)  # naive probabilistic approach to missing values
-    #naive_classifier.fit(X_train, Y_train)
+    naive_classifier = OurTree(16)  # naive probabilistic approach to missing values
+    naive_classifier.fit(X_train, Y_train)
 
-    #Y_pred_1 = classifier.predict(X_test) # Prediction without missing values
+    Y_pred_1 = classifier.predict(X_test) # Prediction without missing values
 
-    #accuracy = accuracy_score(Y_test, Y_pred_1)
-    #avg_accuracy_classifier_without_missing_values += accuracy
+    accuracy = accuracy_score(Y_test, Y_pred_1)
+    avg_accuracy_classifier_without_missing_values += accuracy
 
-    #missing_values_creator = MissingValuesCreator() #removing data initializer
-    #X_test_missing = missing_values_creator.delete_random_values_from_given_columns(X_test, list_of_atributes_missing_values)
-
-    #Y_pred_2 = naive_classifier.predict(X_test_missing)
-    #Y_pred_3 = full_classifier.predict(X_test_missing)
-
-
-    #accuracyfull = accuracy_score(Y_test, Y_pred_2)
-    #avg_accuracy_full_classifier += accuracyfull
-
-    #accuracynaive = accuracy_score(Y_test, Y_pred_3)
-    #avg_accuracy_full_classifier += accuracynaive
-
-    #seed = randrange(1, 1000) #new seed
+    missing_values_creator = MissingValuesCreator(percent=10) #removing data initializer
+    X_test_missing = missing_values_creator.delete_random_values_from_given_columns(X_test, list_of_atributes_missing_values)
+    print(X_test_missing)
+    Y_pred_2 = naive_classifier.predict(X_test_missing)
+    Y_pred_3 = full_classifier.predict(X_test_missing)
 
 
-#avg_accuracy_classifier_without_missing_values = avg_accuracy_classifier_without_missing_values/number_of_iterations
-#avg_accuracy_naive_classifier = avg_accuracy_naive_classifier/number_of_iterations
-#avg_accuracy_full_classifier = avg_accuracy_full_classifier/number_of_iterations
+    accuracyfull = accuracy_score(Y_test, Y_pred_2)
+    avg_accuracy_full_classifier += accuracyfull
 
-#print("Classification without missing values: ",avg_accuracy_classifier_without_missing_values)
-#print("Classification with full probabilistic approach: ", avg_accuracy_full_classifier)
-#print("Classification with naive probabilistic approach: ", avg_accuracy_naive_classifier)
+    accuracynaive = accuracy_score(Y_test, Y_pred_3)
+    avg_accuracy_naive_classifier += accuracynaive
+
+    seed = randrange(1, 1000) #new seed
+
+
+avg_accuracy_classifier_without_missing_values = avg_accuracy_classifier_without_missing_values/number_of_iterations
+avg_accuracy_naive_classifier = avg_accuracy_naive_classifier/number_of_iterations
+avg_accuracy_full_classifier = avg_accuracy_full_classifier/number_of_iterations
+
+print("Classification without missing values: ",avg_accuracy_classifier_without_missing_values)
+print("Classification with full probabilistic approach: ", avg_accuracy_full_classifier)
+print("Classification with naive probabilistic approach: ", avg_accuracy_naive_classifier)
