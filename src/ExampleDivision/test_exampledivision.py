@@ -7,7 +7,7 @@ from random import randrange
 
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-from tree_exampledivision import Examplesplitter
+from decision_tree_exampledivision import Examplesplitter
 from datahandling import create_missing_data, FillDataStrategy, fill_missing_data, load_data
 
 def main():

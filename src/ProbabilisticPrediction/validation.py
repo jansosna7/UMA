@@ -15,7 +15,7 @@ from sklearn.metrics import accuracy_score
 from src.ProbabilisticPrediction.decision_tree import OurTree
 import os
 
-from src.ExampleDivision.tree_exampledivision import Examplesplitter
+from src.ExampleDivision.decision_tree_exampledivision import Examplesplitter
 from src.ExampleDivision.datahandling import load_data
 
 from sklearn.tree import DecisionTreeClassifier
@@ -54,24 +54,34 @@ filename_rice = os.path.join(dirname, '../../resources/rice.csv')
 columns_names_rice_data = ["id", "Area", "MajorAxisLength", "MinorAxisLength", "Eccentricity", "ConvexArea", "EquivDiameter", "Extent", "Perimeter", "Roundness", "AspectRation", "Class"]
 data = pd.read_csv(filename_rice, skiprows=1, header=None, names=columns_names_rice_data)
 data = data[["MajorAxisLength", "MinorAxisLength", "Eccentricity", "ConvexArea", "EquivDiameter", "Extent", "Perimeter", "Roundness", "AspectRation", "Class"]]
-data.head(1000)
+data = data.sample(frac=1)
+data = data.head(1000)
 
 X = data.iloc[:, :-1].values
-Y = data.iloc[:, -1].values.reshape(-1,1)
+Y = data.iloc[:, -1].values
 
 
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=.2, random_state=80)
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=.25, random_state=80)
 
 
 ''' sklearn algorithm '''
 classifier = DecisionTreeClassifier(criterion = 'entropy', random_state = 0)
 model = classifier.fit(X_train, Y_train)
-
-text_representation = tree.export_text(classifier)
-print(text_representation)
 Y_pred_ref = model.predict(X_test)
 
+''' implemented algorithm - '''
+classifier = OurTree(16)
+classifier.fit(X_train,Y_train)
+Y_pred = classifier.predict(X_test)
 
+''' implemented CART with surrogate splitters '''
+#do usunięcia
+#classifier = Examplesplitter(X_train, Y_train)
+#predicted_classes = []
+#for test_index in range(len(X_test)):
+#    predicted_classes.append(classifier.predict(X_test[test_index]))
+
+print("Dokladnosc mojego modelu: ", accuracy_score(Y_test, Y_pred))
 print("Dokladnosc modelu sklearn : ", accuracy_score(Y_test, Y_pred_ref))
-
+#print('Dokładność klasyfikacji: ', accuracy_score(Y_test, predicted_classes))
 
