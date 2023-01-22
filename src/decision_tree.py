@@ -153,6 +153,7 @@ class OurTree:
         # Recursively call the predict function with the subtree
         return self._predict(x, subtree)
 
+    '''handling of NaN values'''
     def is_missing(self, feature_val):
         if str(feature_val) == "NaN" or str(feature_val) == "nan":
             return True
