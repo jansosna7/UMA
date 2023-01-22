@@ -27,7 +27,7 @@ class OurTree:
                 y = np.delete(y, np.where(nan_rows)[0], axis=0)
                 self.tree = self._create_tree(X, y, depth=0)
 
-        print(self.tree)
+        #print(self.tree)
 
     def predict(self, X):
         return np.array([self._predict(x, self.tree) for x in X])
