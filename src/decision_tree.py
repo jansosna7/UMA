@@ -137,7 +137,7 @@ class OurTree:
 
         # If the subtree is a leaf node, return the class
 
-        if isinstance(subtree, int) or isinstance(subtree, float) or isinstance(subtree, np.int64):
+        if isinstance(subtree, int) or isinstance(subtree, float) or isinstance(subtree, np.int64) or type(subtree) in (int,float,None,np.int64):
             return
 
         # Get the feature and value of the current node
