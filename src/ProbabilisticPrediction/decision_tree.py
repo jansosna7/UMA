@@ -140,7 +140,7 @@ class OurTree:
         # If the subtree is a leaf node, return the class
 
         if isinstance(subtree, int) or isinstance(subtree, float) or isinstance(subtree, np.int64):
-            return
+            return subtree
 
         # Get the feature and value of the current node
         feature, value = list(subtree.keys())[0], list(subtree.values())[0]

@@ -10,6 +10,9 @@ from sklearn.impute import SimpleImputer
 from sklearn.tree import DecisionTreeClassifier
 from src.ProbabilisticPrediction.decision_tree import OurTree
 from src.ProbabilisticPrediction.data_deleter import MissingValuesCreator
+import matplotlib.pyplot as plt
+from sklearn.metrics import ConfusionMatrixDisplay
+from sklearn.metrics import confusion_matrix
 
 dirname = os.path.dirname(__file__)
 filename_cancer = os.path.join(dirname, '../../resources/breast-cancer.csv')
@@ -30,7 +33,7 @@ X = data.iloc[:, :-1].values
 Y = data.iloc[:, -1].values
 
 seed = randrange(1, 100)
-number_of_iterations = 10
+number_of_iterations = 3
 list_of_atributes_missing_values = [6]
 avg_accuracy_full_classifier = 0
 avg_accuracy_naive_classifier = 0
@@ -51,12 +54,12 @@ for n in range(number_of_iterations):
 
     Y_pred_1 = classifier.predict(X_test) # Prediction without missing values
 
+
     accuracy = accuracy_score(Y_test, Y_pred_1)
     avg_accuracy_classifier_without_missing_values += accuracy
 
-    missing_values_creator = MissingValuesCreator(percent=10) #removing data initializer
+    missing_values_creator = MissingValuesCreator(percent=50) #removing data initializer
     X_test_missing = missing_values_creator.delete_random_values_from_given_columns(X_test, list_of_atributes_missing_values)
-    print(X_test_missing)
     Y_pred_2 = naive_classifier.predict(X_test_missing)
     Y_pred_3 = full_classifier.predict(X_test_missing)
 
@@ -69,6 +72,39 @@ for n in range(number_of_iterations):
 
     seed = randrange(1, 1000) #new seed
 
+
+    np.set_printoptions(precision=2)
+
+    # Plot non-normalized confusion matrix
+    titles_options = [
+        ("Confusion matrix, without normalization", None),
+        ("Normalized confusion matrix", "true"),
+    ]
+    '''for title, normalize in titles_options:
+        
+        disp = ConfusionMatrixDisplay.from_estimator(
+            full_classifier,
+            X_test,
+            Y_test,
+            display_labels=[0,1],
+            cmap=plt.cm.Blues,
+            normalize=normalize,
+        )
+        disp.ax_.set_title(title)
+
+        print(title)
+        print(disp.confusion_matrix)'''
+    cm = confusion_matrix(Y_test, Y_pred_1)
+    disp1 = ConfusionMatrixDisplay(cm)
+    disp1.plot()
+    cm = confusion_matrix(Y_test, Y_pred_2)
+    disp2= ConfusionMatrixDisplay(cm)
+    disp2.plot()
+    cm = confusion_matrix(Y_test, Y_pred_3)
+    disp3 = ConfusionMatrixDisplay(cm)
+    disp3.plot()
+
+    plt.show()
 
 avg_accuracy_classifier_without_missing_values = avg_accuracy_classifier_without_missing_values/number_of_iterations
 avg_accuracy_naive_classifier = avg_accuracy_naive_classifier/number_of_iterations
