@@ -39,9 +39,6 @@ class OurTree:
         return accuracy
 
     def _create_tree(self, X, y, depth):
-        """Build the decision tree recursively."""
-
-        #Check if reached max depth
         if self.max_depth is not None and depth >= self.max_depth:
             return self._majority_class(y)
 
@@ -134,14 +131,8 @@ class OurTree:
 
         return entropy
 
-    def _predict(self, x, subtree):
-        """Recursivly check what label are we assigning to x"""
-
-        # If the subtree is a leaf node, return the class
-
-        if isinstance(subtree, int) or isinstance(subtree, float) or isinstance(subtree, np.int64):
-            return
-
+    def _predict(self, x):
+        """Predict the class for a single sample."""
         # Get the feature and value of the current node
         feature, value = list(subtree.keys())[0], list(subtree.values())[0]
 
@@ -155,6 +146,7 @@ class OurTree:
         # Recursively call the predict function with the subtree
         return self._predict(x, subtree)
 
+    '''handling of NaN values'''
     def is_missing(self, feature_val):
         if str(feature_val) == "NaN" or str(feature_val) == "nan":
             return True
