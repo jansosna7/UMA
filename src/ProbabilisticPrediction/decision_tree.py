@@ -27,7 +27,7 @@ class OurTree:
                 y = np.delete(y, np.where(nan_rows)[0], axis=0)
                 self.tree = self._create_tree(X, y, depth=0)
 
-        print(self.tree)
+        #print(self.tree)
 
     def predict(self, X):
         return np.array([self._predict(x, self.tree) for x in X])
@@ -46,7 +46,7 @@ class OurTree:
             return self._majority_class(y)
 
         # If all the samples belong to the same class, return that class
-        if len(set(y)) == 1:
+        if len(np.unique(y)) == 1:
             return y[0]
 
         # If there are no more features to split on, return the most common class
@@ -140,7 +140,7 @@ class OurTree:
         # If the subtree is a leaf node, return the class
 
         if isinstance(subtree, int) or isinstance(subtree, float) or isinstance(subtree, np.int64):
-            return
+            return subtree
 
         # Get the feature and value of the current node
         feature, value = list(subtree.keys())[0], list(subtree.values())[0]
