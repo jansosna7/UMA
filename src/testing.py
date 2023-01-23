@@ -6,7 +6,7 @@ from sklearn.impute import SimpleImputer
 from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
 
-from decision_tree import OurTree
+from src.ProbabilisticPrediction.decision_tree import OurTree
 
 data = pd.read_csv('resources/customer_data.csv')
 org_data = data
