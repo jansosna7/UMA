@@ -3,13 +3,13 @@
 *				Author: Marcin Latawiec                                    *
 *===========================================================================*
 '''
-from scipy.stats import rice
 
 ''' class for handling missing values by filling it'''
 
 from enum import Enum, auto
 import numpy as np
 from sklearn.datasets import load_breast_cancer
+import copy
 class FillDataMethod(Enum):
     MEAN = auto()
     MEDIAN = auto()
@@ -21,16 +21,17 @@ def load_data(dataset_name):
     raise TypeError
 
 class Filler:
-    def __int__(self, unique_names_probability_dict, tree):
-        self.probability_dict = unique_names_probability_dict
-        self.tree = tree
+    def __int__(self):
+        pass
 
-    def fill_missing_data(self, dataset, method):
-        rows, cols = dataset.shape
+    def fill_missing_data(self, list, method):
+        list_filled = copy.copy(list)
+        rows, cols = list_filled.shape
         for col_index in range(cols):
-            column = dataset[:, col_index]
+            column = list_filled[:, col_index]
             replacement = self.get_replacement_value(column, method)
             column[np. isnan(column)] = replacement
+        return list_filled
 
 
     def get_replacement_value(self, column, method):

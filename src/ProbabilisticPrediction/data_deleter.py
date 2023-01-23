@@ -68,7 +68,7 @@ class MissingValuesCreator:
                 # randomly selecting element of list (element without missing values)
                 index_of_missing_value = random.choice(indexes_of_not_missing_elements)
                 # filling with missing value
-                list_with_missing_values[int(index_of_missing_value)][index] = 'NaN'
+                list_with_missing_values[int(index_of_missing_value)][index] = np.nan
                 # deleting index from list of indexes of elements without missing values
                 indices = np.where(indexes_of_not_missing_elements == index_of_missing_value)
                 indexes_of_not_missing_elements = np.delete(indexes_of_not_missing_elements, indices)
