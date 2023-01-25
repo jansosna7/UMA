@@ -8,15 +8,11 @@
 from random import randrange
 
 import pandas as pd
-import numpy as np
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-from sklearn.impute import SimpleImputer
-from sklearn import tree
-from sklearn.tree import DecisionTreeClassifier
-from decision_tree import OurTree
-from src.ProbabilisticPrediction.data_deleter import MissingValuesCreator
-from src.ProbabilisticPrediction.handler_filler import Filler, FillDataMethod
+from src.decision_tree import OurTree
+from src.data_deleter import MissingValuesCreator
+from src.handler_filler import Filler, FillDataMethod
 import os
 
 
@@ -29,9 +25,9 @@ Files:
 '''
 
 dirname = os.path.dirname(__file__)
-filename_cancer = os.path.join(dirname, '../../resources/breast-cancer.csv')
-filename_customerdata = os.path.join(dirname, '../../resources/customer_data.csv')
-filename_rice = os.path.join(dirname, '../../resources/rice.csv')
+filename_cancer = os.path.join(dirname, '../resources/breast-cancer.csv')
+filename_customerdata = os.path.join(dirname, '../resources/customer_data.csv')
+filename_rice = os.path.join(dirname, '../resources/rice.csv')
 
 
 ''' breast cancer data ''' # 590 examples - full data set

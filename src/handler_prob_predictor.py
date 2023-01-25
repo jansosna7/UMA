@@ -4,7 +4,7 @@
 *===========================================================================*
 '''
 
-''' class for handling probabilistic approach'''
+''' class for handling missing data with probabilistic approach'''
 class ProbabilisticPredictor:
     def __init__(self, unique_names_probability_dict, tree):
         self.probability_dict = unique_names_probability_dict

@@ -10,19 +10,11 @@
 
 import numpy as np
 import pandas as pd
-from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-from src.ProbabilisticPrediction.decision_tree import OurTree
+from src.decision_tree import OurTree
 import os
-
-from src.ExampleDivision.decision_tree_exampledivision import Examplesplitter
-from src.ExampleDivision.datahandling import load_data
-
 from sklearn.tree import DecisionTreeClassifier
-from sklearn import tree
-
-
 
 '''
 Files: 
@@ -32,9 +24,9 @@ Files:
 '''
 
 dirname = os.path.dirname(__file__)
-filename_cancer = os.path.join(dirname, '../../resources/breast-cancer.csv')
-filename_customerdata = os.path.join(dirname, '../../resources/customer_data.csv')
-filename_rice = os.path.join(dirname, '../../resources/rice.csv')
+filename_cancer = os.path.join(dirname, '../resources/breast-cancer.csv')
+filename_customerdata = os.path.join(dirname, '../resources/customer_data.csv')
+filename_rice = os.path.join(dirname, '../resources/rice.csv')
 
 #data handlers
 
