@@ -33,10 +33,12 @@ from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.metrics import confusion_matrix
 
 def main():
-    depth = 16 #max depth for all trees
+    depth = 8 #max depth for all trees
     n = 100 #how many rows from data
     data_sets = ['breast-cancer.csv','customer_data.csv','rice.csv']
     dirname = os.path.dirname(__file__)
+    data_chose_iterations = 3
+    test_iterations = 3
 
     #init
     ourClf = OurTree(depth)
@@ -59,7 +61,7 @@ def main():
         if data_set == 'breast-cancer.csv':
             raw_data = raw_data.replace({'M':0, 'B':1})
 
-        for choose_rows in range(0,3):
+        for choose_rows in range(0,data_chose_iterations):
             data = raw_data.sample(frac=1)
             data = data.head(n)
             data['z'] = 1
@@ -110,7 +112,7 @@ def main():
                     Y_test = X_test[:,label_column]
                     X_test = np.delete(X_test, label_column, axis=1)
                     print(build_method, " ", predict_method)
-                    for iteration in range(0,n):
+                    for iteration in range(0,test_iterations):
                         ourClf.fit(X_train,Y_train)
                         y_pred = ourClf.predict(X_test)
                         score = accuracy_score(Y_test, y_pred)
