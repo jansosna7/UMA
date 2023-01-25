@@ -13,8 +13,10 @@ class OurTree:
     def __init__(self, max_depth=None):
         self.tree = None
         self.max_depth = max_depth
+        self.y_train = []
 
     def fit(self, X, y, method=None):
+        self.y_train = y
         """Choose dealing with NaN method and start building tree"""
         if method is None or method == "default":
             self.tree = self._create_tree(X, y, depth=0)
@@ -65,6 +67,7 @@ class OurTree:
 
         # Return the tree as a dictionary
         return {feature: {value: (left_tree, right_tree)}}
+
 
     def _majority_class(self, y):
         count = Counter(y)
@@ -135,6 +138,9 @@ class OurTree:
         return entropy
 
     def _predict(self, x, subtree):
+        if np.isnan(x).any:
+            return self._majority_class(self.y_train)
+
         """Recursivly check what label are we assigning to x"""
 
         # If the subtree is a leaf node, return the class

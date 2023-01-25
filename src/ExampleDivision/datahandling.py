@@ -71,7 +71,7 @@ def replace_nans_with_fractionals(dataset):
             for value, weight in fractions[nan_col]:
                 tmp_row = copy(row)
                 tmp_row[nan_col] = value
-                tmp_row[len(tmp_row) - 1] = weight
+                tmp_row[len(tmp_row) - 1] = weight*tmp_row[len(tmp_row) - 1]
 
                 dataset = np.append(dataset, [tmp_row], axis=0)
 

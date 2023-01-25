@@ -14,8 +14,12 @@ class OurTreeFractional:
         self.tree = None
         self.max_depth = max_depth
 
-    def fit(self, X, y, z):
+    def fit(self, X, y, z=None):
         """Choose dealing with NaN method and start building tree"""
+
+        if z is None:
+            z = X[:,:-1]
+            X = np.delete(X, -1, axis=1)
 
         self.tree = self._create_tree(X, y, z, depth=0)
 
