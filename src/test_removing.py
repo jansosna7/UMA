@@ -6,7 +6,9 @@
 
 from random import randrange
 
+import numpy as np
 import pandas as pd
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from src.decision_tree import OurTree
 from src.data_deleter import MissingValuesCreator
@@ -64,7 +66,6 @@ x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=.25, random_
 
 
 
-
 #refererncyjna dokładność
 '''
 classifier = OurTree(16)
@@ -73,15 +74,43 @@ y_pred = classifier.predict(x_test)
 print(accuracy_score(y_test, y_pred))
 '''
 
-list_of_atributes_missing_values = [2,3,5,8]
-for percentage in range(20, 81):
+list_of_atributes_missing_values = [2,3,4,5] #any range
+percentage = 80 #range 0-100
+missingcreator = MissingValuesCreator(percent=60)
+x_train = missingcreator.delete_random_values_from_given_columns(x_train, list_of_atributes_missing_values)
+x_train2 = x_train[~np.isnan(x_train).any(axis=1)]
+x_test = missingcreator.delete_random_values_from_given_columns(x_test, list_of_atributes_missing_values)
+x_test2 = x_train[~np.isnan(x_train).any(axis=1)]
+y_train.resize(len(x_train2), refcheck=False)
+y_test.resize(len(x_test2), refcheck=False)
+classifier = OurTree(16)
+classifier.fit(x_train2, y_train)
+y_pred = classifier.predict(x_test2)
+print("Dokładność dla zbiorów o brakach wynoszących:", 100 - percentage, "Liczba brakujących atrybutów:", len(list_of_atributes_missing_values))
+print(accuracy_score(y_test, y_pred))
+
+'''
+list_of_atributes_missing_values = [2,3] #change for 
+number_of_iterations = 3
+for percentage in range (20, 80):
     if percentage%20 == 0:
-        missingcreator = MissingValuesCreator(percent=percentage)
-        xtrainmissingcreator = missingcreator.delete_random_values_from_given_columns(x_train, list_of_atributes_missing_values)
-        xtestmissingcreator = missingcreator.delete_random_values_from_given_columns(x_test, list_of_atributes_missing_values)
+        avg_accuracy = 0
 
-        classifier = OurTree(16)
-        classifier.fit(xtrainmissingcreator,y_train)
-        y_pred = classifier.predict(xtestmissingcreator)
-        print("Dokładność dla zbiorów o brakach wynoszących:", 100 - percentage, "Liczba brakujących atrybutów:", 6)
+        for n in range(number_of_iterations):
+            missingcreator = MissingValuesCreator(percent=percentage)
+            x_train = missingcreator.delete_random_values_from_given_columns(x_train, list_of_atributes_missing_values)
+            x_train2 = x_train[~np.isnan(x_train).any(axis=1)]
+            x_test = missingcreator.delete_random_values_from_given_columns(x_test, list_of_atributes_missing_values)
+            x_test2 = x_train[~np.isnan(x_train).any(axis=1)]
+            y_train.resize(len(x_train2), refcheck=False)
+            y_test.resize(len(x_test2), refcheck=False)
 
+            classifier = OurTree(16)
+            classifier.fit(x_train2, y_train)
+            y_pred = classifier.predict(x_test2)
+            avg_accuracy += accuracy_score(y_test, y_pred)
+
+        avg_accuracy = avg_accuracy/number_of_iterations
+        print("Dokładność dla zbiorów o brakach wynoszących:", 100 - percentage, "Liczba brakujących atrybutów:", len(list_of_atributes_missing_values))
+
+'''
