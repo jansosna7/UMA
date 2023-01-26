@@ -12,10 +12,10 @@ from random import randrange
 
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-from src.ExampleDivision import *
+from src import *
 import os.path
 from random import randrange
-from src.ExampleDivision.datahandling import replace_nans_with_fractionals
+from src.datahandling import replace_nans_with_fractionals
 
 
 
