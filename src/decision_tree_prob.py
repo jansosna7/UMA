@@ -26,7 +26,7 @@ class Node():
         # for leaf node
         self.value = value
         self.final_leaf_dataset = final_leaf_dataset
-class OurTree():
+class OurTreeProb():
     def __init__(self, min_samples_split=2, max_depth=2,predictor=1):
         ''' constructor '''
         # initialize the root of the tree
