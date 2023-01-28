@@ -8,7 +8,6 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 
-
 class OurTree:
     def __init__(self, max_depth=None):
         self.tree = None

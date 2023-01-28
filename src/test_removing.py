@@ -8,8 +8,10 @@ from random import randrange
 
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score
+from matplotlib import pyplot as plt
+from sklearn.metrics import accuracy_score, ConfusionMatrixDisplay, confusion_matrix
 from sklearn.model_selection import train_test_split
+from src.decision_tree_prob import OurTreeProb
 from src.decision_tree import OurTree
 from src.data_deleter import MissingValuesCreator
 import os
@@ -59,6 +61,8 @@ data = data.head(1000)
 X = data.iloc[:, :-1].values
 Y = data.iloc[:, -1].values
 
+
+
 #generating seed
 seed = randrange(1, 1000)
 #spliting to training and testing set
@@ -74,43 +78,47 @@ y_pred = classifier.predict(x_test)
 print(accuracy_score(y_test, y_pred))
 '''
 
-list_of_atributes_missing_values = [2,3,4,5] #any range
-percentage = 80 #range 0-100
-missingcreator = MissingValuesCreator(percent=60)
-x_train = missingcreator.delete_random_values_from_given_columns(x_train, list_of_atributes_missing_values)
-x_train2 = x_train[~np.isnan(x_train).any(axis=1)]
-x_test = missingcreator.delete_random_values_from_given_columns(x_test, list_of_atributes_missing_values)
-x_test2 = x_train[~np.isnan(x_train).any(axis=1)]
-y_train.resize(len(x_train2), refcheck=False)
-y_test.resize(len(x_test2), refcheck=False)
+list_of_atributes_missing_values = [2,3] #any range
+percentage = 50 #range 0-100
+missingcreator = MissingValuesCreator(percent=percentage)
 classifier = OurTree(16)
-classifier.fit(x_train2, y_train)
+classifier.fit(x_train, y_train)
+x_test = missingcreator.delete_random_values_from_given_columns(x_test, list_of_atributes_missing_values)
+x_test2 = x_test[~np.isnan(x_test).any(axis=1)]
+y_train.resize(len(x_train), refcheck=False)
+y_test.resize(len(x_test2), refcheck=False)
 y_pred = classifier.predict(x_test2)
-print("Dokładność dla zbiorów o brakach wynoszących:", 100 - percentage, "Liczba brakujących atrybutów:", len(list_of_atributes_missing_values))
+print("Dokładność dla zbiorów o brakach wynoszących:", percentage, "Liczba brakujących atrybutów:", len(list_of_atributes_missing_values))
 print(accuracy_score(y_test, y_pred))
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=.25, random_state=seed)
 
-'''
-list_of_atributes_missing_values = [2,3] #change for 
-number_of_iterations = 3
-for percentage in range (20, 80):
-    if percentage%20 == 0:
-        avg_accuracy = 0
+missing_values_creator = MissingValuesCreator(percent=percentage) #removing data initializer
+X_test_missing = missing_values_creator.delete_random_values_from_given_columns(X_test, list_of_atributes_missing_values)
+Y_pred = classifier.predict(X_test_missing)
 
-        for n in range(number_of_iterations):
-            missingcreator = MissingValuesCreator(percent=percentage)
-            x_train = missingcreator.delete_random_values_from_given_columns(x_train, list_of_atributes_missing_values)
-            x_train2 = x_train[~np.isnan(x_train).any(axis=1)]
-            x_test = missingcreator.delete_random_values_from_given_columns(x_test, list_of_atributes_missing_values)
-            x_test2 = x_train[~np.isnan(x_train).any(axis=1)]
-            y_train.resize(len(x_train2), refcheck=False)
-            y_test.resize(len(x_test2), refcheck=False)
+np.set_printoptions(precision=2)
 
-            classifier = OurTree(16)
-            classifier.fit(x_train2, y_train)
-            y_pred = classifier.predict(x_test2)
-            avg_accuracy += accuracy_score(y_test, y_pred)
+# Plot non-normalized confusion matrix
+titles_options = [
+    ("Confusion matrix, without normalization", None),
+    ("Normalized confusion matrix", "true"),
+]
+'''for title, normalize in titles_options:
 
-        avg_accuracy = avg_accuracy/number_of_iterations
-        print("Dokładność dla zbiorów o brakach wynoszących:", 100 - percentage, "Liczba brakujących atrybutów:", len(list_of_atributes_missing_values))
+    disp = ConfusionMatrixDisplay.from_estimator(
+        classifier,
+        X_test,
+        Y_test,
+        display_labels=[0,1],
+        cmap=plt.cm.Blues,
+        normalize=normalize,
+    )
+    disp.ax_.set_title(title)
 
-'''
+    print(title)
+    print(disp.confusion_matrix)'''
+cm = confusion_matrix(Y_test, Y_pred)
+disp1 = ConfusionMatrixDisplay(cm)
+disp1.plot()
+plt.show()
+

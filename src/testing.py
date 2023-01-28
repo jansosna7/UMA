@@ -1,9 +1,15 @@
+'''
+*===========================================================================*
+*				Author: Marcin Latawiec                                    *
+*===========================================================================*
+'''
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.tree import DecisionTreeClassifier
 
+from src.decision_tree_prob import OurTreeProb
 from src.decision_tree import OurTree
 
 data = pd.read_csv('resources/customer_data.csv')

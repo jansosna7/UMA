@@ -13,8 +13,8 @@ import copy
 
 
 class MissingValuesCreator:
-
-    def __init__(self, percent=100):
+    #percent - of data which is to be deleted
+    def __init__(self, percent=100): #
         self.percent = percent
 
     def change_percent(self, percent):
