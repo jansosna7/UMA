@@ -54,9 +54,10 @@ def get_replacement_value(column, strategy):
 def replace_nans_with_fractionals(dataset):
     rows, cols = dataset.shape
     fractions = [get_fractional_examples(dataset[:, id]) for id in range(cols)]
-    for i in range(0, len(dataset)):
+    i = 0
+    while i < len(dataset):
         row = dataset[i]
-        if (np.isnan(row).any()):
+        if np.isnan(row).any():
             nan_col = np.isnan(row)
             id = 0
             for na in nan_col:
@@ -67,17 +68,18 @@ def replace_nans_with_fractionals(dataset):
 
             tmp_row = row
             dataset = np.delete(dataset, i, axis=0)
+            i -= 1
 
             for value, weight in fractions[nan_col]:
                 tmp_row = copy(row)
                 tmp_row[nan_col] = value
                 tmp_row[len(tmp_row) - 1] = weight*tmp_row[len(tmp_row) - 1]
-
                 dataset = np.append(dataset, [tmp_row], axis=0)
-
+        i += 1
     return dataset
 
 def get_fractional_examples(column):
+
     n = len(column)
     mask = np.logical_not(np.isnan(column))
     column = column[mask]

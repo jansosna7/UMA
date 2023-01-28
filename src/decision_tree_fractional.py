@@ -18,12 +18,12 @@ class OurTreeFractional:
         """Choose dealing with NaN method and start building tree"""
 
         if z is None:
-            z = X[:,:-1]
+            z = X[:, -1]
             X = np.delete(X, -1, axis=1)
 
         self.tree = self._create_tree(X, y, z, depth=0)
 
-        # print(self.tree)
+        #print(self.tree)
 
     def predict(self, X):
         return np.array([self._predict(x, self.tree) for x in X])
@@ -39,7 +39,7 @@ class OurTreeFractional:
 
         # Check if reached max depth
         if self.max_depth is not None and depth >= self.max_depth:
-            return self._majority_class(y)
+            return self._majority_class(y,z)
 
         # If all the samples belong to the same class, return that class
         if len(np.unique(y)) == 1:
@@ -63,8 +63,13 @@ class OurTreeFractional:
         return {feature: {value: (left_tree, right_tree)}}
 
     # todo use fractianals here
-    def _majority_class(self, y):
-        count = Counter(y)
+    def _majority_class(self, y,z):
+        count = {}
+        for i in range(0,len(y)):
+            if y[i] in count:
+                count[y[i]] += z[i]
+            else:
+                count[y[i]] = z[i]
         return max(count, key=count.get)
 
     def _choose_split(self, X, y, z):
@@ -72,6 +77,8 @@ class OurTreeFractional:
         best_feature = None
         best_value = None
         max_gain = -float("inf")
+
+
 
         for feature in range(X.shape[1]):
             for value in set(X[:, feature]):
@@ -117,11 +124,10 @@ class OurTreeFractional:
         # Calculate the weighted average entropy after the split
         entropy_left = self._entropy(y_left, z_left)
         entropy_right = self._entropy(y_right, z_right)
-        weighted_entropy = (len(y_left) / len(y)) * entropy_left + (len(y_right) / len(y)) * entropy_right
+        weighted_entropy = (len(z_left) / sum(z)) * entropy_left + (len(z_right) / sum(z)) * entropy_right
 
         # Calculate the information gain
         gain = entropy_before - weighted_entropy
-
         return gain
 
     def _entropy(self, y, z):
@@ -149,7 +155,8 @@ class OurTreeFractional:
 
         # If the subtree is a leaf node, return the class
 
-        if isinstance(subtree, int) or isinstance(subtree, float) or isinstance(subtree, np.int64) or isinstance(subtree, np.float64):
+        if isinstance(subtree, int) or isinstance(subtree, float) or isinstance(subtree, np.int64) or isinstance(
+                subtree, np.float64):
             return subtree
 
         # Get the feature and value of the current node

@@ -4,7 +4,7 @@
 *===========================================================================*
 '''
 import sys
-
+import time
 
 sys.path.append("/home/kali/PycharmProjects/UMA")
 
@@ -26,22 +26,24 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.tree import DecisionTreeClassifier
-from decision_tree import OurTree
 from data_deleter import MissingValuesCreator
 import matplotlib.pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.metrics import confusion_matrix
 
 def main():
-    depth = 8 #max depth for all trees
-    n = 100 #how many rows from data
-    data_sets = ['breast-cancer.csv','customer_data.csv','rice.csv']
+    depth = 10 #max depth for all trees
+    n = 400 #how many rows from data
+    #data_sets = ['breast-cancer.csv','customer_data.csv','rice.csv']
+    data_sets = ['customer_data.csv']
     dirname = os.path.dirname(__file__)
-    data_chose_iterations = 3
-    test_iterations = 3
+    data_chose_iterations = 6
+    test_iterations = 1
+    list_of_atributes_missing_values = [2, 4, 6]  # any range
+    missingcreator = MissingValuesCreator(percent=60)
 
     #init
-    ourClf = OurTree(depth)
+    ourClf = OurTreeFractional(depth)
     clf = DecisionTreeClassifier(max_depth=depth)
     X_train = None
     Y_train = None
@@ -54,25 +56,31 @@ def main():
             label_column = 0
         elif data_set == 'rice.csv':
             label_column = 11
-        path = '../../resources/'+data_set
-        filename = os.path.join(dirname, path)
-        print(filename)
-        raw_data = pd.read_csv(filename, skiprows=1, header=None, sep=',')
+        path = './resources/'+data_set
+        #filename = os.path.join(dirname, path)
+        print(path)
+        raw_data = pd.read_csv(path, skiprows=1, header=None, sep=',')
         if data_set == 'breast-cancer.csv':
             raw_data = raw_data.replace({'M':0, 'B':1})
 
-        for choose_rows in range(0,data_chose_iterations):
+        #for choose_rows in range(0, 3):
+        for choose_rows in range(0, 1):
+
             data = raw_data.sample(frac=1)
             data = data.head(n)
             data['z'] = 1
             data = data.values
-            #print(data)
+
+            missingcreator.change_percent(choose_rows)
+            #data = missingcreator.delete_random_values_from_given_columns(data, list_of_atributes_missing_values)
+
+
             seed = randrange(1, 100)
             train, test, tmp_train, tmp_test = train_test_split(data, data[:,0], test_size=.2, random_state=seed)
 
             #prepare train datasets accordingly to build method
-            for build_method in ['skip','mean','median','most_frequent','fractionals']:
-                ourClf = OurTree(depth)
+            for build_method in ['fractionals']:
+                ourClf = OurTreeFractional(depth)
                 clf = DecisionTreeClassifier(max_depth=depth)
                 if build_method == 'skip':
                     X_train = np.array(train, dtype=float)
@@ -88,39 +96,64 @@ def main():
 
 
                 elif build_method == 'fractionals':
-                    x_train = replace_nans_with_fractionals(train)
-                    ourClf = OurTreeFractional(depth)
+
+                    X_train = replace_nans_with_fractionals(train)
+
+
 
                 Y_train = X_train[:,label_column]
                 X_train = np.delete(X_train, label_column, axis=1)
 
+                start = time.time()
+                ourClf.fit(X_train, Y_train)
+                elapsed = time.time()
+                print('{:s} function took {:.3f} ms'.format("our fit", (elapsed - start) * 1000.0))
 
+                start = time.time()
+                clf.fit(X_train, Y_train)
+                elapsed = time.time()
+                print('{:s} function took {:.3f} ms'.format("library fit", (elapsed - start) * 1000.0))
 
                 #prepare train datasets accordingly to build method
-                for predict_method in ['skip', 'mean', 'median', 'most_frequent', 'fractionals']:
+                #for predict_method in ['skip', 'mean', 'median', 'most_frequent']:
+                for predict_method in ['mean']:
+
                     if predict_method == 'skip':
-                        #problem solved in _predict
-                        X_test = test
+                        X_test= np.array(train, dtype=float)
+                        nan_rows = np.isnan(X_test).any(axis=1)
+
+                        # delete the rows that contain NaN values
+                        X_test = np.delete(X_test, np.where(nan_rows)[0], axis=0)
 
                     elif predict_method in ['mean', 'median', 'most_frequent']:
                         imputer = SimpleImputer(strategy=predict_method)
                         X_test = imputer.fit_transform(test)
 
-                    elif predict_method == 'fractionals':
-                        X_test = replace_nans_with_fractionals(test)
+                    #elif predict_method == 'fractionals':
+                     #   X_test = replace_nans_with_fractionals(test)
 
                     Y_test = X_test[:,label_column]
                     X_test = np.delete(X_test, label_column, axis=1)
                     print(build_method, " ", predict_method)
                     for iteration in range(0,test_iterations):
-                        ourClf.fit(X_train,Y_train)
                         y_pred = ourClf.predict(X_test)
+
                         score = accuracy_score(Y_test, y_pred)
                         print(score, " ", end="")
-                    clf.fit(X_train, Y_train)
+                        cm = confusion_matrix(Y_test, y_pred)
+                        disp1 = ConfusionMatrixDisplay(cm)
+                        disp1.plot()
+
+
+                        plt.show()
                     y_pred = clf.predict(X_test)
                     score = accuracy_score(Y_test, y_pred)
                     print("library score: ",score)
+                    score = accuracy_score(Y_test, y_pred)
+                    cm = confusion_matrix(Y_test, y_pred)
+                    disp1 = ConfusionMatrixDisplay(cm)
+                    disp1.plot()
 
+                    plt.show()
 if __name__ == '__main__':
     main()
