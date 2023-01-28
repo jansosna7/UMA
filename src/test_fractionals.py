@@ -26,7 +26,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.tree import DecisionTreeClassifier
-from decision_tree import OurTree
+from decision_tree_prob import OurTree
 from data_deleter import MissingValuesCreator
 import matplotlib.pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay

@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.tree import DecisionTreeClassifier
 
-from src.decision_tree import OurTree
+from src.decision_tree_prob import OurTree
 
 data = pd.read_csv('resources/customer_data.csv')
 org_data = data

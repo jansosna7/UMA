@@ -7,10 +7,11 @@
 
 from random import randrange
 
+import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
-from src.decision_tree import OurTree
+from src.decision_tree_prob import OurTree
 from src.data_deleter import MissingValuesCreator
 from src.handler_filler import Filler, FillDataMethod
 import os
@@ -129,9 +130,5 @@ for percentage in range(20, 81):
         y_pred = classifier.predict(xtestmissingcreator)
         print("Dokładność dla zbiorów o brakach wynoszących:", 100 - percentage, "Liczba brakujących atrybutów:", 6)
         print(accuracy_score(y_test, y_pred))
-
-
-
-
 
 
